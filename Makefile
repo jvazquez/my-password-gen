@@ -40,7 +40,7 @@ production_disk_volumes:
 	$(DOCKER) volume create j-vazquez.com
 staging_disk_volumes:
 	$(DOCKER) volume create jvazquez.xyz
-staging_disk_volumes:
+develop_disk_volumes:
 	$(DOCKER) volume create develop.jvazquez
 development_code:
 	$(DOCKER) build $(BUILD_ARG) -f build/go/Dockerfile -t local-my-password-gen .
