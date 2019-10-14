@@ -11,23 +11,23 @@ production_up: production_start
 staging_up: staging_start
 develop_up: develop_start
 production_start:
-	docker-compose -f docker-compose.production.yml up -d
+	docker-compose -f deployments/docker-compose.production.yml up -d
 staging_start:
-	docker-compose -f docker-compose.staging.yml up -d
+	docker-compose -f deployments/docker-compose.staging.yml up -d
 develop_start:
-	docker-compose -f docker-compose.yml up -d
+	docker-compose -f deployments/docker-compose.yml up -d
 develop_shutdown:
 	docker-compose stop
 develop_volumes_down:
-	docker-compose down --volumes
+	docker-compose deployments/docker-compose.yml down --volumes
 staging_shutdown:
-	docker-compose -f docker-compose.staging.yml stop
+	docker-compose -f deployments/docker-compose.staging.yml stop
 staging_volumes_down:
-	docker-compose -f docker-compose.staging.yml down --volumes
+	docker-compose -f deployments/docker-compose.staging.yml down --volumes
 production_shutdown:
-	docker-compose -f docker-compose.production.yml stop
+	docker-compose -f deployments/docker-compose.production.yml stop
 production_volumes_down:
-	docker-compose -f docker-compose.production.yml down --volumes
+	docker-compose -f deployments/docker-compose.production.yml down --volumes
 destroy_disk_volumes:
 	$(DOCKER) volume rm -f $(VOLUME)
 disk_volumes:
