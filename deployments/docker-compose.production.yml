@@ -13,5 +13,5 @@ networks:
     external:
       name: j-vazquez.com
 volumes:
-  my-password-gen-go:
+  j-vazquez.com:
     external: true
