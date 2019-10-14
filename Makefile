@@ -49,7 +49,7 @@ development_code:
 production_code_image:
 	$(DOCKER) volume create j-vazquez.com
 	$(DOCKER) stop data-container || true && docker rm data-container || true
-	$(DOCKER) run -v j-vazquez.com:/app/my-password-gen --name data-container busybox true
+	$(DOCKER) run -v j-vazquez.com:/app/ --name data-container busybox true
 	$(DOCKER) cp . data-container:/app/my-password-gen
 	$(DOCKER) stop data-container
 	$(DOCKER) rm data-container
