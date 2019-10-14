@@ -5,6 +5,9 @@ services:
     container_name: my-password-gen-api
     volumes:
       - j-vazquez.com:/app
+    working_dir: /app/my-password-gen/cmd
+    command: ["go", "run", "xkcd.go"]
+
 networks:
   default:
     external:
