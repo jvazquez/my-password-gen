@@ -1,16 +1,16 @@
 DOCKER = /usr/bin/docker
 BUILD_ARG = $(if $(filter  $(NOCACHE), 1),--no-cache)
 
-production: production_code_image
-staging: staging_code_image
-development: develop_code_image
+production: production_code production_code_image
+staging: staging_code staging_code_image
+development: develop_code develop_code_image
 clean: volumes_down destroy_disk_volumes
 develop_stop: develop_shutdown develop_volumes_down
 production_stop: production_shutdown production_volumes_down
 staging_stop: staging_shutdown staging_volumes_down
-production_up: production_code production_start
-staging_up: staging_code staging_start
-develop_up: develop_code develop_start
+production_up: production_start
+staging_up: staging_start
+develop_up: develop_start
 
 production_start:
 	docker-compose -f deployments/docker-compose.production.yml up -d
