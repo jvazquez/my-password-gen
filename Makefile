@@ -1,9 +1,9 @@
 DOCKER = /usr/bin/docker
 BUILD_ARG = $(if $(filter  $(NOCACHE), 1),--no-cache)
 
-production: production_destroy_disk_volumes code_image development_code
-staging: staging_destroy_disk_volumes code_image development_code
-development: develop_destroy_disk_volumes code_image development_code
+production: production_code_image
+staging: staging_code_image
+development: develop_code_image
 clean: volumes_down destroy_disk_volumes
 develop_stop: develop_shutdown develop_volumes_down
 production_stop: production_shutdown production_volumes_down
@@ -45,12 +45,26 @@ staging_disk_volumes:
 	$(DOCKER) volume create develop.jvazquez
 development_code:
 	$(DOCKER) build $(BUILD_ARG) -f build/go/Dockerfile -t local-my-password-gen .
-	$(DOCKER) run  --rm -v $(VOLUME):/my-password-gen --name data-container local-my-password-gen bash -c 'cd /my-password-gen/cmd;\
+	$(DOCKER) run  --rm -v develop.jvazquez:/my-password-gen --name data-container local-my-password-gen bash -c 'cd /my-password-gen/cmd;\
 	 go build xkcd.go'
-code_image:
-	$(DOCKER) volume create $(VOLUME)
+production_code_image:
+	$(DOCKER) volume create j-vazquez.com
 	$(DOCKER) stop data-container || true && docker rm data-container || true
-	$(DOCKER) run -v $(VOLUME):/my-password-gen --name data-container busybox true
+	$(DOCKER) run -v j-vazquez.com:/my-password-gen --name data-container busybox true
+	$(DOCKER) cp . data-container:/my-password-gen
+	$(DOCKER) stop data-container
+	$(DOCKER) rm data-container
+staging_code_image:
+	$(DOCKER) volume create jvazquez.xyz
+	$(DOCKER) stop data-container || true && docker rm data-container || true
+	$(DOCKER) run -v jvazquez.xyz:/my-password-gen --name data-container busybox true
+	$(DOCKER) cp . data-container:/my-password-gen
+	$(DOCKER) stop data-container
+	$(DOCKER) rm data-container
+develop_code_image:
+	$(DOCKER) volume create develop.jvazquez
+	$(DOCKER) stop data-container || true && docker rm data-container || true
+	$(DOCKER) run -v develop.jvazquez:/my-password-gen --name data-container busybox true
 	$(DOCKER) cp . data-container:/my-password-gen
 	$(DOCKER) stop data-container
 	$(DOCKER) rm data-container

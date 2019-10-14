@@ -4,7 +4,7 @@ services:
     image: local-my-password-gen
     container_name: my-password-gen-api
     volumes:
-      - my-password-gen-go:/my-password-gen
+      - j-vazquez.com:/my-password-gen
     ports:
       - 8000:8000
 
