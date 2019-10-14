@@ -5,9 +5,6 @@ services:
     container_name: my-password-gen-api
     volumes:
       - jvazquez.xyz:/my-password-gen
-    ports:
-      - 8000:8000
-
 networks:
   default:
     external:
