@@ -1,18 +1,33 @@
 DOCKER = /usr/bin/docker
 BUILD_ARG = $(if $(filter  $(NOCACHE), 1),--no-cache)
-DEFAULT_ENVIRONMENT = development
-ENVIRONMENT_TO_BUILD := $(if $(ENVIRONMENT),$(ENVIRONMENT),$(DEFAULT_ENVIRONMENT))
-DOCKERFILE_PATH = $(if $(filter  $(ENVIRONMENT_TO_BUILD), production),images/python/production/Dockerfile,images/python/development/Dockerfile)
 VOLUME = my-password-gen-go
 
 development: destroy_disk_volumes code_image development_code
 clean: volumes_down destroy_disk_volumes
-stop: shutdown volumes_down
-
-shutdown:
+develop_stop: develop_shutdown develop_volumes_down
+production_stop: production_shutdown production_volumes_down
+staging_stop: staging_shutdown staging_volumes_down
+production_up: production_start
+staging_up: staging_start
+develop_up: develop_start
+production_start:
+	docker-compose -f docker-compose.production.yml up -d
+staging_start:
+	docker-compose -f docker-compose.staging.yml up -d
+develop_start:
+	docker-compose -f docker-compose.yml up -d
+develop_shutdown:
 	docker-compose stop
-volumes_down:
+develop_volumes_down:
 	docker-compose down --volumes
+staging_shutdown:
+	docker-compose -f docker-compose.staging.yml stop
+staging_volumes_down:
+	docker-compose -f docker-compose.staging.yml down --volumes
+production_shutdown:
+	docker-compose -f docker-compose.production.yml stop
+production_volumes_down:
+	docker-compose -f docker-compose.production.yml down --volumes
 destroy_disk_volumes:
 	$(DOCKER) volume rm -f $(VOLUME)
 disk_volumes:
