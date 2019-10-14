@@ -12,7 +12,6 @@ production_up: production_start
 staging_up: staging_start
 develop_up: develop_start
 
-
 production_start:
 	docker-compose -f deployments/docker-compose.production.yml up -d
 staging_start:
@@ -45,26 +44,26 @@ staging_disk_volumes:
 	$(DOCKER) volume create develop.jvazquez
 development_code:
 	$(DOCKER) build $(BUILD_ARG) -f build/go/Dockerfile -t local-my-password-gen .
-	$(DOCKER) run  --rm -v develop.jvazquez:/my-password-gen --name data-container local-my-password-gen bash -c 'cd /my-password-gen/cmd;\
+	$(DOCKER) run --rm -v develop.jvazquez:/app/my-password-gen --name data-container local-my-password-gen bash -c 'cd /my-password-gen/cmd;\
 	 go build xkcd.go'
 production_code_image:
 	$(DOCKER) volume create j-vazquez.com
 	$(DOCKER) stop data-container || true && docker rm data-container || true
-	$(DOCKER) run -v j-vazquez.com:/my-password-gen --name data-container busybox true
-	$(DOCKER) cp . data-container:/my-password-gen
+	$(DOCKER) run -v j-vazquez.com:/app/my-password-gen --name data-container busybox true
+	$(DOCKER) cp . data-container:/app/my-password-gen
 	$(DOCKER) stop data-container
 	$(DOCKER) rm data-container
 staging_code_image:
 	$(DOCKER) volume create jvazquez.xyz
 	$(DOCKER) stop data-container || true && docker rm data-container || true
-	$(DOCKER) run -v jvazquez.xyz:/my-password-gen --name data-container busybox true
-	$(DOCKER) cp . data-container:/my-password-gen
+	$(DOCKER) run -v jvazquez.xyz:/app/ --name data-container busybox true
+	$(DOCKER) cp . data-container:/app/my-password-gen
 	$(DOCKER) stop data-container
 	$(DOCKER) rm data-container
 develop_code_image:
 	$(DOCKER) volume create develop.jvazquez
 	$(DOCKER) stop data-container || true && docker rm data-container || true
-	$(DOCKER) run -v develop.jvazquez:/my-password-gen --name data-container busybox true
-	$(DOCKER) cp . data-container:/my-password-gen
+	$(DOCKER) run -v develop.jvazquez:/app/ --name data-container busybox true
+	$(DOCKER) cp . data-container:/app/my-password-gen
 	$(DOCKER) stop data-container
 	$(DOCKER) rm data-container

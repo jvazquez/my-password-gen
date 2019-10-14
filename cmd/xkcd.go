@@ -31,6 +31,13 @@ func passwordGeneratorHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	const SOCK = "/app/my-password-gen/deployments/go.sock"
+	os.Remove(SOCK)
+	unixListener, err := net.Listen("unix", SOCK)
+	if err != nil {
+		log.Fatal("Listen (UNIX socket): ", err)
+	}
+	defer unixListener.Close()
 	http.HandleFunc("/", passwordGeneratorHandler)
-	http.ListenAndServe(":8000", nil)
+	http.Serve(unixListener, nil)
 }
