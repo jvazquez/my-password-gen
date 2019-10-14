@@ -8,9 +8,9 @@ clean: volumes_down destroy_disk_volumes
 develop_stop: develop_shutdown develop_volumes_down
 production_stop: production_shutdown production_volumes_down
 staging_stop: staging_shutdown staging_volumes_down
-production_up: production_start
-staging_up: staging_start
-develop_up: develop_start
+production_up: production_code production_start
+staging_up: staging_code staging_start
+develop_up: develop_code develop_start
 
 production_start:
 	docker-compose -f deployments/docker-compose.production.yml up -d
@@ -42,9 +42,17 @@ staging_disk_volumes:
 	$(DOCKER) volume create jvazquez.xyz
 develop_disk_volumes:
 	$(DOCKER) volume create develop.jvazquez
-development_code:
+production_code:
 	$(DOCKER) build $(BUILD_ARG) -f build/go/Dockerfile -t local-my-password-gen .
-	$(DOCKER) run --rm -v develop.jvazquez:/app/my-password-gen --name data-container local-my-password-gen bash -c 'cd /my-password-gen/cmd;\
+	$(DOCKER) run --rm -v j-vazquez.com:/app --name data-container local-my-password-gen bash -c 'cd /app/my-password-gen/cmd;\
+	 go build xkcd.go'
+staging_code:
+	$(DOCKER) build $(BUILD_ARG) -f build/go/Dockerfile -t local-my-password-gen .
+	$(DOCKER) run --rm -v jvazquez.xyz:/app --name data-container local-my-password-gen bash -c 'cd /app/my-password-gen/cmd;\
+	 go build xkcd.go'
+develop_code:
+	$(DOCKER) build $(BUILD_ARG) -f build/go/Dockerfile -t local-my-password-gen .
+	$(DOCKER) run --rm -v develop.jvazquez:/app --name data-container local-my-password-gen bash -c 'cd /app/my-password-gen/cmd;\
 	 go build xkcd.go'
 production_code_image:
 	$(DOCKER) volume create j-vazquez.com
